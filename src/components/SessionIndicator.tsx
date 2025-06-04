@@ -9,20 +9,20 @@ interface SessionIndicatorProps {
 const SessionIndicator: React.FC<SessionIndicatorProps> = ({ isWorkSession }) => {
   return (
     <div className="text-center mb-8">
-      <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full border-2 transition-all duration-300 ${
+      <div className={`inline-flex items-center gap-3 px-6 py-3 rounded border-2 transition-all duration-300 font-mono ${
         isWorkSession 
-          ? 'border-orange-500 bg-orange-500/10 text-orange-400' 
-          : 'border-blue-500 bg-blue-500/10 text-blue-400'
+          ? 'border-orange-400 bg-orange-400/10 text-orange-400' 
+          : 'border-blue-400 bg-blue-400/10 text-blue-400'
       }`}>
         {isWorkSession ? (
           <>
-            <Briefcase className="h-6 w-6" />
-            <span className="timer-font text-xl font-medium">Work Session</span>
+            <Briefcase className="h-5 w-5" />
+            <span className="text-sm font-bold uppercase tracking-wider">WORK SESSION</span>
           </>
         ) : (
           <>
-            <Coffee className="h-6 w-6" />
-            <span className="timer-font text-xl font-medium">Break Time</span>
+            <Coffee className="h-5 w-5" />
+            <span className="text-sm font-bold uppercase tracking-wider">BREAK TIME</span>
           </>
         )}
       </div>

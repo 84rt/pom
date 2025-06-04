@@ -4,18 +4,32 @@ import Timer from '../components/Timer';
 import ProgressBar from '../components/ProgressBar';
 import Controls from '../components/Controls';
 import SessionIndicator from '../components/SessionIndicator';
+import TaskInput from '../components/TaskInput';
+import TaskHistory from '../components/TaskHistory';
+import TaskCompletion from '../components/TaskCompletion';
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const BREAK_TIME = 5 * 60; // 5 minutes in seconds
+
+interface TaskHistoryItem {
+  id: string;
+  task: string;
+  completed: boolean;
+  timestamp: Date;
+}
 
 const Index = () => {
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isActive, setIsActive] = useState(false);
   const [isWorkSession, setIsWorkSession] = useState(true);
   const [initialTime, setInitialTime] = useState(WORK_TIME);
+  const [currentTask, setCurrentTask] = useState('');
+  const [taskHistory, setTaskHistory] = useState<TaskHistoryItem[]>([]);
+  const [showTaskCompletion, setShowTaskCompletion] = useState(false);
+  const [pendingTask, setPendingTask] = useState('');
 
   // Calculate progress percentage
-  const progress = (timeLeft / initialTime) * 100;
+  const progress = ((initialTime - timeLeft) / initialTime) * 100;
 
   // Timer logic
   useEffect(() => {
@@ -26,6 +40,13 @@ const Index = () => {
         setTimeLeft(time => time - 1);
       }, 1000);
     } else if (timeLeft === 0) {
+      if (isWorkSession && currentTask) {
+        // Work session ended, ask about task completion
+        setPendingTask(currentTask);
+        setShowTaskCompletion(true);
+        setCurrentTask('');
+      }
+      
       // Auto-switch sessions when timer hits zero
       setIsWorkSession(prev => !prev);
       const nextSessionTime = isWorkSession ? BREAK_TIME : WORK_TIME;
@@ -38,7 +59,7 @@ const Index = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, timeLeft, isWorkSession]);
+  }, [isActive, timeLeft, isWorkSession, currentTask]);
 
   const toggleTimer = useCallback(() => {
     setIsActive(prev => !prev);
@@ -49,29 +70,44 @@ const Index = () => {
     setIsWorkSession(true);
     setTimeLeft(WORK_TIME);
     setInitialTime(WORK_TIME);
+    setCurrentTask('');
   }, []);
 
-  // Play notification sound when session switches (optional)
-  useEffect(() => {
-    if (timeLeft === 0) {
-      // You could add a notification sound here
-      console.log(`Session switched to: ${isWorkSession ? 'Work' : 'Break'}`);
+  const handleTaskCompletion = useCallback((completed: boolean) => {
+    if (pendingTask) {
+      const newHistoryItem: TaskHistoryItem = {
+        id: Date.now().toString(),
+        task: pendingTask,
+        completed,
+        timestamp: new Date(),
+      };
+      setTaskHistory(prev => [newHistoryItem, ...prev]);
     }
-  }, [isWorkSession, timeLeft]);
+    setShowTaskCompletion(false);
+    setPendingTask('');
+  }, [pendingTask]);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 font-mono">
       <div className="w-full max-w-4xl mx-auto text-center">
-        <div className="mb-12">
-          <h1 className="timer-font text-4xl md:text-5xl font-bold text-white mb-4">
-            Pomodoro Timer
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+            FOCUS SESSION
           </h1>
-          <p className="timer-font text-gray-400 text-lg">
-            Stay focused, take breaks, be productive
+          <p className="text-gray-400 text-sm uppercase tracking-wider">
+            GET SHIT DONE
           </p>
         </div>
 
         <SessionIndicator isWorkSession={isWorkSession} />
+        
+        {isWorkSession && (
+          <TaskInput 
+            value={currentTask}
+            onChange={setCurrentTask}
+            disabled={isActive}
+          />
+        )}
         
         <Timer timeLeft={timeLeft} isActive={isActive} />
         
@@ -80,12 +116,22 @@ const Index = () => {
         <Controls 
           isActive={isActive} 
           onToggle={toggleTimer} 
-          onReset={resetTimer} 
+          onReset={resetTimer}
+          canStart={!isWorkSession || currentTask.trim() !== ''}
         />
 
-        <div className="mt-12 timer-font text-gray-500 text-sm">
-          <p>Work: 25 minutes • Break: 5 minutes</p>
+        <div className="mt-8 text-gray-500 text-xs uppercase tracking-wider">
+          WORK: 25MIN • BREAK: 5MIN
         </div>
+
+        <TaskHistory tasks={taskHistory} />
+
+        {showTaskCompletion && (
+          <TaskCompletion
+            task={pendingTask}
+            onComplete={handleTaskCompletion}
+          />
+        )}
       </div>
     </div>
   );

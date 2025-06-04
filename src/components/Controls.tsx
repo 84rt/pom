@@ -7,25 +7,27 @@ interface ControlsProps {
   isActive: boolean;
   onToggle: () => void;
   onReset: () => void;
+  canStart?: boolean;
 }
 
-const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset }) => {
+const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset, canStart = true }) => {
   return (
     <div className="flex gap-4 justify-center">
       <Button
         onClick={onToggle}
+        disabled={!canStart}
         size="lg"
-        className="timer-font text-lg px-8 py-3 bg-white text-gray-900 hover:bg-gray-100 transition-all duration-200"
+        className="font-mono text-sm px-8 py-3 bg-white text-black hover:bg-gray-200 transition-all duration-200 uppercase tracking-wider font-bold disabled:opacity-50"
       >
         {isActive ? (
           <>
-            <Pause className="mr-2 h-5 w-5" />
-            Pause
+            <Pause className="mr-2 h-4 w-4" />
+            PAUSE
           </>
         ) : (
           <>
-            <Play className="mr-2 h-5 w-5" />
-            Start
+            <Play className="mr-2 h-4 w-4" />
+            START
           </>
         )}
       </Button>
@@ -34,10 +36,10 @@ const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset }) => {
         onClick={onReset}
         size="lg"
         variant="outline"
-        className="timer-font text-lg px-8 py-3 border-gray-600 text-white hover:bg-gray-800 transition-all duration-200"
+        className="font-mono text-sm px-8 py-3 border-gray-600 text-white hover:bg-gray-800 transition-all duration-200 uppercase tracking-wider font-bold"
       >
-        <RotateCcw className="mr-2 h-5 w-5" />
-        Reset
+        <RotateCcw className="mr-2 h-4 w-4" />
+        RESET
       </Button>
     </div>
   );
