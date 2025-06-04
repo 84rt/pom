@@ -1,31 +1,54 @@
 
 import React from 'react';
-import { Coffee, Briefcase } from 'lucide-react';
+import { Zap, Clock } from 'lucide-react';
 
 interface SessionIndicatorProps {
   isWorkSession: boolean;
+  isSprintMode: boolean;
+  onSprintModeToggle: () => void;
+  disabled?: boolean;
 }
 
-const SessionIndicator: React.FC<SessionIndicatorProps> = ({ isWorkSession }) => {
+const SessionIndicator: React.FC<SessionIndicatorProps> = ({ 
+  isWorkSession, 
+  isSprintMode, 
+  onSprintModeToggle,
+  disabled = false 
+}) => {
+  if (!isWorkSession) {
+    return (
+      <div className="mb-8">
+        <div className="inline-block px-6 py-2 bg-blue-900/30 border border-blue-400 rounded font-mono text-xs text-blue-400 uppercase tracking-wider font-bold">
+          <Clock className="inline mr-2 h-3 w-3" />
+          BREAK TIME
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="text-center mb-8">
-      <div className={`inline-flex items-center gap-3 px-6 py-3 rounded border-2 transition-all duration-300 font-mono ${
-        isWorkSession 
-          ? 'border-orange-400 bg-orange-400/10 text-orange-400' 
-          : 'border-blue-400 bg-blue-400/10 text-blue-400'
-      }`}>
-        {isWorkSession ? (
+    <div className="mb-8">
+      <button
+        onClick={onSprintModeToggle}
+        disabled={disabled}
+        className={`inline-block px-6 py-2 border rounded font-mono text-xs uppercase tracking-wider font-bold transition-all duration-200 ${
+          isSprintMode
+            ? 'bg-yellow-400/10 border-yellow-400 text-yellow-400 hover:bg-yellow-400/20'
+            : 'bg-orange-900/30 border-orange-400 text-orange-400 hover:bg-orange-400/20'
+        } disabled:opacity-50 disabled:cursor-not-allowed`}
+      >
+        {isSprintMode ? (
           <>
-            <Briefcase className="h-5 w-5" />
-            <span className="text-sm font-bold uppercase tracking-wider">WORK SESSION</span>
+            <Zap className="inline mr-2 h-3 w-3" />
+            SPRINT MODE
           </>
         ) : (
           <>
-            <Coffee className="h-5 w-5" />
-            <span className="text-sm font-bold uppercase tracking-wider">BREAK TIME</span>
+            <Clock className="inline mr-2 h-3 w-3" />
+            WORK SESSION
           </>
         )}
-      </div>
+      </button>
     </div>
   );
 };

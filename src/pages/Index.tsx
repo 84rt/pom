@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import Timer from '../components/Timer';
 import ProgressBar from '../components/ProgressBar';
@@ -7,7 +6,6 @@ import SessionIndicator from '../components/SessionIndicator';
 import TaskInput from '../components/TaskInput';
 import TaskHistory from '../components/TaskHistory';
 import TaskCompletion from '../components/TaskCompletion';
-import SprintModeToggle from '../components/SprintModeToggle';
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const BREAK_TIME = 5 * 60; // 5 minutes in seconds
@@ -125,13 +123,12 @@ const Index = () => {
           </p>
         </div>
 
-        <SprintModeToggle 
-          isSprintMode={isSprintMode} 
-          onToggle={handleSprintModeToggle}
+        <SessionIndicator 
+          isWorkSession={isWorkSession} 
+          isSprintMode={isSprintMode}
+          onSprintModeToggle={handleSprintModeToggle}
           disabled={isActive}
         />
-
-        <SessionIndicator isWorkSession={isWorkSession} />
         
         {isWorkSession && (
           <TaskInput 

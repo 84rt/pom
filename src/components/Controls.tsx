@@ -36,7 +36,7 @@ const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset, canSta
         onClick={onReset}
         size="lg"
         variant="outline"
-        className="font-mono text-sm px-8 py-3 border-gray-600 text-white hover:bg-gray-800 transition-all duration-200 uppercase tracking-wider font-bold"
+        className="font-mono text-sm px-8 py-3 border-gray-400 bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 uppercase tracking-wider font-bold"
       >
         <RotateCcw className="mr-2 h-4 w-4" />
         RESET
