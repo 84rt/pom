@@ -111,6 +111,12 @@ const Index = () => {
     setPendingTask('');
   }, [pendingTask]);
 
+  const handleTaskInputEnter = useCallback(() => {
+    if (currentTask.trim() !== '' && !isActive && isWorkSession) {
+      toggleTimer();
+    }
+  }, [currentTask, isActive, isWorkSession, toggleTimer]);
+
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 font-mono">
       <div className="w-full max-w-4xl mx-auto text-center">
@@ -135,6 +141,7 @@ const Index = () => {
             value={currentTask}
             onChange={setCurrentTask}
             disabled={isActive}
+            onEnterPress={handleTaskInputEnter}
           />
         )}
         

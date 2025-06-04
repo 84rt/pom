@@ -16,9 +16,7 @@ const Timer: React.FC<TimerProps> = ({ timeLeft, isActive }) => {
   return (
     <div className="text-center">
       <div 
-        className={`text-8xl md:text-9xl font-bold text-white mb-4 transition-all duration-300 font-mono ${
-          isActive ? 'animate-pulse' : ''
-        }`}
+        className="text-8xl md:text-9xl font-bold text-white mb-4 transition-all duration-300 font-mono"
         style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
       >
         {formatTime(timeLeft)}
