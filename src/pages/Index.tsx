@@ -7,9 +7,12 @@ import SessionIndicator from '../components/SessionIndicator';
 import TaskInput from '../components/TaskInput';
 import TaskHistory from '../components/TaskHistory';
 import TaskCompletion from '../components/TaskCompletion';
+import SprintModeToggle from '../components/SprintModeToggle';
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const BREAK_TIME = 5 * 60; // 5 minutes in seconds
+const SPRINT_WORK_TIME = 5 * 60; // 5 minutes in seconds
+const SPRINT_BREAK_TIME = 1 * 60; // 1 minute in seconds
 
 interface TaskHistoryItem {
   id: string;
@@ -19,6 +22,7 @@ interface TaskHistoryItem {
 }
 
 const Index = () => {
+  const [isSprintMode, setIsSprintMode] = useState(false);
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isActive, setIsActive] = useState(false);
   const [isWorkSession, setIsWorkSession] = useState(true);
@@ -28,8 +32,29 @@ const Index = () => {
   const [showTaskCompletion, setShowTaskCompletion] = useState(false);
   const [pendingTask, setPendingTask] = useState('');
 
+  // Get current session durations based on mode
+  const getWorkTime = () => isSprintMode ? SPRINT_WORK_TIME : WORK_TIME;
+  const getBreakTime = () => isSprintMode ? SPRINT_BREAK_TIME : BREAK_TIME;
+
   // Calculate progress percentage
   const progress = ((initialTime - timeLeft) / initialTime) * 100;
+
+  // Handle sprint mode toggle
+  const handleSprintModeToggle = useCallback(() => {
+    setIsSprintMode(prev => {
+      const newMode = !prev;
+      const newWorkTime = newMode ? SPRINT_WORK_TIME : WORK_TIME;
+      
+      // Reset timer when switching modes
+      setIsActive(false);
+      setIsWorkSession(true);
+      setTimeLeft(newWorkTime);
+      setInitialTime(newWorkTime);
+      setCurrentTask('');
+      
+      return newMode;
+    });
+  }, []);
 
   // Timer logic
   useEffect(() => {
@@ -49,7 +74,7 @@ const Index = () => {
       
       // Auto-switch sessions when timer hits zero
       setIsWorkSession(prev => !prev);
-      const nextSessionTime = isWorkSession ? BREAK_TIME : WORK_TIME;
+      const nextSessionTime = isWorkSession ? getBreakTime() : getWorkTime();
       setTimeLeft(nextSessionTime);
       setInitialTime(nextSessionTime);
       // Continue running the timer for the next session
@@ -59,7 +84,7 @@ const Index = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, timeLeft, isWorkSession, currentTask]);
+  }, [isActive, timeLeft, isWorkSession, currentTask, isSprintMode]);
 
   const toggleTimer = useCallback(() => {
     setIsActive(prev => !prev);
@@ -68,10 +93,11 @@ const Index = () => {
   const resetTimer = useCallback(() => {
     setIsActive(false);
     setIsWorkSession(true);
-    setTimeLeft(WORK_TIME);
-    setInitialTime(WORK_TIME);
+    const workTime = getWorkTime();
+    setTimeLeft(workTime);
+    setInitialTime(workTime);
     setCurrentTask('');
-  }, []);
+  }, [isSprintMode]);
 
   const handleTaskCompletion = useCallback((completed: boolean) => {
     if (pendingTask) {
@@ -99,6 +125,12 @@ const Index = () => {
           </p>
         </div>
 
+        <SprintModeToggle 
+          isSprintMode={isSprintMode} 
+          onToggle={handleSprintModeToggle}
+          disabled={isActive}
+        />
+
         <SessionIndicator isWorkSession={isWorkSession} />
         
         {isWorkSession && (
@@ -121,7 +153,7 @@ const Index = () => {
         />
 
         <div className="mt-8 text-gray-500 text-xs uppercase tracking-wider">
-          WORK: 25MIN • BREAK: 5MIN
+          {isSprintMode ? 'SPRINT: 5MIN • BREAK: 1MIN' : 'WORK: 25MIN • BREAK: 5MIN'}
         </div>
 
         <TaskHistory tasks={taskHistory} />
