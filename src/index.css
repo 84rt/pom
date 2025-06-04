@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,4 +99,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom monospace font for timer */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+.timer-font {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
