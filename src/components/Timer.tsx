@@ -4,9 +4,10 @@ import React from 'react';
 interface TimerProps {
   timeLeft: number;
   isActive: boolean;
+  isWorkSession: boolean;
 }
 
-const Timer: React.FC<TimerProps> = ({ timeLeft, isActive }) => {
+const Timer: React.FC<TimerProps> = ({ timeLeft, isActive, isWorkSession }) => {
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -16,8 +17,14 @@ const Timer: React.FC<TimerProps> = ({ timeLeft, isActive }) => {
   return (
     <div className="text-center">
       <div 
-        className="text-8xl md:text-9xl font-bold text-white mb-4 transition-all duration-300 font-mono"
-        style={{ textShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
+        className={`text-8xl md:text-9xl font-bold mb-4 transition-all duration-500 font-mono ${
+          isWorkSession ? 'text-white' : 'text-black'
+        }`}
+        style={{ 
+          textShadow: isWorkSession 
+            ? '0 0 20px rgba(255, 255, 255, 0.3)' 
+            : '0 0 20px rgba(0, 0, 0, 0.3)' 
+        }}
       >
         {formatTime(timeLeft)}
       </div>

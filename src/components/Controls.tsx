@@ -8,16 +8,21 @@ interface ControlsProps {
   onToggle: () => void;
   onReset: () => void;
   canStart?: boolean;
+  isWorkSession: boolean;
 }
 
-const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset, canStart = true }) => {
+const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset, canStart = true, isWorkSession }) => {
   return (
     <div className="flex gap-4 justify-center">
       <Button
         onClick={onToggle}
         disabled={!canStart}
         size="lg"
-        className="font-mono text-sm px-8 py-3 bg-white text-black hover:bg-gray-200 transition-all duration-200 uppercase tracking-wider font-bold disabled:opacity-50"
+        className={`font-mono text-sm px-8 py-3 transition-all duration-200 uppercase tracking-wider font-bold disabled:opacity-50 ${
+          isWorkSession 
+            ? 'bg-white text-black hover:bg-gray-200' 
+            : 'bg-black text-white hover:bg-gray-800'
+        }`}
       >
         {isActive ? (
           <>
@@ -36,7 +41,11 @@ const Controls: React.FC<ControlsProps> = ({ isActive, onToggle, onReset, canSta
         onClick={onReset}
         size="lg"
         variant="outline"
-        className="font-mono text-sm px-8 py-3 border-gray-400 bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200 uppercase tracking-wider font-bold"
+        className={`font-mono text-sm px-8 py-3 transition-all duration-200 uppercase tracking-wider font-bold ${
+          isWorkSession 
+            ? 'border-gray-400 bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white' 
+            : 'border-gray-600 bg-transparent text-gray-700 hover:bg-gray-200 hover:text-black'
+        }`}
       >
         <RotateCcw className="mr-2 h-4 w-4" />
         RESET

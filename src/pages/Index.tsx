@@ -130,10 +130,14 @@ const Index = () => {
   }, [currentTask, isActive, isWorkSession, toggleTimer]);
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 font-mono">
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 font-mono transition-all duration-500 ${
+      isWorkSession ? 'bg-black' : 'bg-white'
+    }`}>
       <div className="w-full max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <p className="text-gray-400 text-sm uppercase tracking-wider mb-4">
+          <p className={`text-sm uppercase tracking-wider mb-4 ${
+            isWorkSession ? 'text-gray-400' : 'text-gray-600'
+          }`}>
             Choose mode:
           </p>
         </div>
@@ -154,7 +158,7 @@ const Index = () => {
           />
         )}
         
-        <Timer timeLeft={timeLeft} isActive={isActive} />
+        <Timer timeLeft={timeLeft} isActive={isActive} isWorkSession={isWorkSession} />
         
         <ProgressBar progress={progress} isWorkSession={isWorkSession} />
         
@@ -163,13 +167,16 @@ const Index = () => {
           onToggle={toggleTimer} 
           onReset={resetTimer}
           canStart={!isWorkSession || currentTask.trim() !== ''}
+          isWorkSession={isWorkSession}
         />
 
-        <div className="mt-8 text-gray-500 text-xs uppercase tracking-wider">
+        <div className={`mt-8 text-xs uppercase tracking-wider ${
+          isWorkSession ? 'text-gray-500' : 'text-gray-600'
+        }`}>
           {isSprintMode ? 'SPRINT: 5MIN • BREAK: 1MIN' : 'WORK: 25MIN • BREAK: 5MIN'}
         </div>
 
-        <TaskHistory tasks={taskHistory} />
+        <TaskHistory tasks={taskHistory} isWorkSession={isWorkSession} />
 
         {showTaskCompletion && (
           <TaskCompletion

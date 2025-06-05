@@ -18,7 +18,7 @@ const SessionIndicator: React.FC<SessionIndicatorProps> = ({
   if (!isWorkSession) {
     return (
       <div className="mb-8">
-        <div className="inline-block px-6 py-2 bg-blue-900/30 border border-blue-400 rounded font-mono text-xs text-blue-400 uppercase tracking-wider font-bold">
+        <div className="inline-block px-6 py-2 bg-blue-100 border border-blue-600 rounded font-mono text-xs text-blue-800 uppercase tracking-wider font-bold">
           <Clock className="inline mr-2 h-3 w-3" />
           BREAK TIME
         </div>
