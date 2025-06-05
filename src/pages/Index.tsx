@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import Timer from '../components/Timer';
 import ProgressBar from '../components/ProgressBar';
@@ -70,13 +71,24 @@ const Index = () => {
         setCurrentTask('');
       }
       
-      // Auto-switch sessions when timer hits zero
-      setIsWorkSession(prev => !prev);
-      const nextSessionTime = isWorkSession ? getBreakTime() : getWorkTime();
-      setTimeLeft(nextSessionTime);
-      setInitialTime(nextSessionTime);
-      // Continue running the timer for the next session
-      setIsActive(true);
+      // Switch sessions when timer hits zero
+      if (isWorkSession) {
+        // Work session ended, switch to break
+        setIsWorkSession(false);
+        const breakTime = getBreakTime();
+        setTimeLeft(breakTime);
+        setInitialTime(breakTime);
+        // Continue running the timer for the break session
+        setIsActive(true);
+      } else {
+        // Break session ended, switch to work but stop the timer
+        setIsWorkSession(true);
+        const workTime = getWorkTime();
+        setTimeLeft(workTime);
+        setInitialTime(workTime);
+        // Stop the timer so user needs to enter a new task
+        setIsActive(false);
+      }
     }
 
     return () => {
@@ -121,11 +133,8 @@ const Index = () => {
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 font-mono">
       <div className="w-full max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            FOCUS SESSION
-          </h1>
-          <p className="text-gray-400 text-sm uppercase tracking-wider">
-            GET SHIT DONE
+          <p className="text-gray-400 text-sm uppercase tracking-wider mb-4">
+            Choose mode:
           </p>
         </div>
 
