@@ -64,30 +64,20 @@ const Index = () => {
         setTimeLeft(time => time - 1);
       }, 1000);
     } else if (timeLeft === 0) {
+      // Stop the timer when it hits zero
+      setIsActive(false);
+      
       if (isWorkSession && currentTask) {
         // Work session ended, ask about task completion
         setPendingTask(currentTask);
         setShowTaskCompletion(true);
         setCurrentTask('');
-      }
-      
-      // Switch sessions when timer hits zero
-      if (isWorkSession) {
-        // Work session ended, switch to break
-        setIsWorkSession(false);
-        const breakTime = getBreakTime();
-        setTimeLeft(breakTime);
-        setInitialTime(breakTime);
-        // Continue running the timer for the break session
-        setIsActive(true);
-      } else {
-        // Break session ended, switch to work but stop the timer
+      } else if (!isWorkSession) {
+        // Break session ended, switch to work
         setIsWorkSession(true);
         const workTime = getWorkTime();
         setTimeLeft(workTime);
         setInitialTime(workTime);
-        // Stop the timer so user needs to enter a new task
-        setIsActive(false);
       }
     }
 
@@ -121,7 +111,14 @@ const Index = () => {
     }
     setShowTaskCompletion(false);
     setPendingTask('');
-  }, [pendingTask]);
+    
+    // Now start the break timer
+    setIsWorkSession(false);
+    const breakTime = getBreakTime();
+    setTimeLeft(breakTime);
+    setInitialTime(breakTime);
+    setIsActive(true);
+  }, [pendingTask, isSprintMode]);
 
   const handleTaskInputEnter = useCallback(() => {
     if (currentTask.trim() !== '' && !isActive && isWorkSession) {
