@@ -21,11 +21,11 @@ interface TaskHistoryItem {
 }
 
 const Index = () => {
-  const [isSprintMode, setIsSprintMode] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(WORK_TIME);
+  const [isSprintMode, setIsSprintMode] = useState(true); // Default to Sprint Mode
+  const [timeLeft, setTimeLeft] = useState(SPRINT_WORK_TIME); // Start with sprint work time
   const [isActive, setIsActive] = useState(false);
   const [isWorkSession, setIsWorkSession] = useState(true);
-  const [initialTime, setInitialTime] = useState(WORK_TIME);
+  const [initialTime, setInitialTime] = useState(SPRINT_WORK_TIME); // Start with sprint work time
   const [currentTask, setCurrentTask] = useState('');
   const [taskHistory, setTaskHistory] = useState<TaskHistoryItem[]>([]);
   const [showTaskCompletion, setShowTaskCompletion] = useState(false);

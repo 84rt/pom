@@ -45,7 +45,7 @@ const SessionIndicator: React.FC<SessionIndicatorProps> = ({
         ) : (
           <>
             <Clock className="inline mr-2 h-3 w-3" />
-            WORK SESSION
+            NORMAL MODE
           </>
         )}
       </button>
